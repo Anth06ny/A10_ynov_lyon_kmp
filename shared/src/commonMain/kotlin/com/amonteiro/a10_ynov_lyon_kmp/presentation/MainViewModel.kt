@@ -3,17 +3,21 @@ package com.amonteiro.a10_ynov_lyon_kmp.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amonteiro.a10_ynov_lyon_kmp.data.remote.WeatherApiDataSource
+import com.amonteiro.a10_ynov_lyon_kmp.di.initKoin
 import com.amonteiro.a10_ynov_lyon_kmp.domain.model.Weather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform
 import kotlin.time.Duration.Companion.milliseconds
 
 
 suspend fun main() {
-    val viewModel = MainViewModel()
+
+    initKoin()
+    val viewModel = KoinPlatform.getKoin().get<MainViewModel>()
     //viewModel.loadWeathers("")
     viewModel.loadWeathers("Paris")
     //attente
@@ -26,7 +30,7 @@ suspend fun main() {
 
 }
 
-class MainViewModel : ViewModel() {
+class MainViewModel(val weatherApiDataSource: WeatherApiDataSource) : ViewModel() {
 
     val dataList = MutableStateFlow(emptyList<Weather>())
     val runInProgress = MutableStateFlow(false)
@@ -47,7 +51,7 @@ class MainViewModel : ViewModel() {
                 if(cityName.length < 3){
                     throw Exception("Il faut au moins 3 caractères")
                 }
-                dataList.value = WeatherApiDataSource.loadWeathers(cityName)
+                dataList.value = weatherApiDataSource.loadWeathers(cityName)
             }
             catch (e: Exception) {
                 e.printStackTrace()

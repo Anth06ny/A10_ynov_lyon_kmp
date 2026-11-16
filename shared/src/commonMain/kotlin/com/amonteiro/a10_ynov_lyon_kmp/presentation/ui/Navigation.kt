@@ -2,7 +2,6 @@ package com.amonteiro.a10_ynov_lyon_kmp.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -15,6 +14,7 @@ import com.amonteiro.a10_ynov_lyon_kmp.presentation.ui.screens.SearchScreen
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import org.koin.compose.viewmodel.koinViewModel
 
 //Les routes implémentent NavKey
 class Routes {
@@ -40,7 +40,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 
     //La pile d'écrans, avec l'écran de départ. Sauvegardée lors des rotations
     val backStack = rememberNavBackStack(navConfig, Routes.SearchRoute)
-    val mainViewModel : MainViewModel = viewModel(){ MainViewModel ()}
+    val mainViewModel : MainViewModel = koinViewModel<MainViewModel>()
 
     NavDisplay(
         backStack = backStack,

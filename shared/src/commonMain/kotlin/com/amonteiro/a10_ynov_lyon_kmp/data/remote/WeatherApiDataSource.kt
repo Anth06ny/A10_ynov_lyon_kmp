@@ -1,50 +1,30 @@
 package com.amonteiro.a10_ynov_lyon_kmp.data.remote
 
+import com.amonteiro.a10_ynov_lyon_kmp.BuildConfig
+import com.amonteiro.a10_ynov_lyon_kmp.di.initKoin
 import com.amonteiro.a10_ynov_lyon_kmp.domain.model.Weather
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
 import io.ktor.http.isSuccess
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import org.koin.mp.KoinPlatform
 
 suspend fun main() {
 
-    for (weather in WeatherApiDataSource.loadWeathers("nice")) {
+    initKoin()
+   val weatherApiDataSource =  KoinPlatform.getKoin().get<WeatherApiDataSource>()
+
+    for (weather in weatherApiDataSource.loadWeathers("nice")) {
         println(weather.getResume())
     }
 }
 
-object WeatherApiDataSource {
-
-    private val client = HttpClient {
-        install(Logging) {
-            //(import io.ktor.client.plugins.logging.Logger)
-            logger = object : Logger {
-                override fun log(message: String) {
-                    println(message)
-                }
-            }
-            level = LogLevel.INFO  // TRACE, HEADERS, BODY, etc.
-        }
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true }, contentType = ContentType.Any)
-        }
-        install(HttpTimeout) {
-            requestTimeoutMillis = 5000
-        }
-    }
+class WeatherApiDataSource(val client : HttpClient) {
 
     suspend fun loadWeathers(cityName:String) : List<Weather> {
-        val response = client.get("https://api.openweathermap.org/data/2.5/find?q=$cityName&appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr")
+        val response = client.get("https://api.openweathermap.org/data/2.5/find?q=$cityName&appid=${BuildConfig.WEATHER_API_KEY}&units=metric&lang=fr")
 
         if (!response.status.isSuccess()) {
             throw Exception("Erreur API: ${response.status} - ${response.bodyAsText()}")

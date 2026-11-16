@@ -114,6 +114,10 @@ kotlin {
             //Navigation 3 avec org.jetbrains spécifique à KMP
             implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.2")
 
+            //Injection dépendance KOIN
+            implementation("io.insert-koin:koin-compose:4.1.+")
+            implementation("io.insert-koin:koin-compose-viewmodel:4.1.+")
+            implementation("io.insert-koin:koin-compose-viewmodel-navigation:4.1.+")
         }
 
 
