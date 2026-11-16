@@ -4,9 +4,7 @@ import a10_ynov_lyon_kmp.shared.generated.resources.Res
 import a10_ynov_lyon_kmp.shared.generated.resources.error
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
@@ -50,6 +47,7 @@ import com.amonteiro.a10_ynov_lyon_kmp.data.fake.WeatherFakeDataSource
 import com.amonteiro.a10_ynov_lyon_kmp.domain.model.Weather
 import com.amonteiro.a10_ynov_lyon_kmp.presentation.MainViewModel
 import com.amonteiro.a10_ynov_lyon_kmp.presentation.ui.MyError
+import com.amonteiro.a10_ynov_lyon_kmp.presentation.ui.WeatherGallery
 import com.amonteiro.a10_ynov_lyon_kmp.presentation.ui.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 
@@ -144,20 +142,10 @@ fun SearchScreenContent(
             CircularProgressIndicator()
         }
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(list.size) {
-                PictureRowItem(
-                    data = list[it], modifier =
-                        Modifier
-                            .background(MaterialTheme.colorScheme.onTertiary)
-                            .fillMaxWidth(),
-                    onPictureClick = onPictureClick
-                )
-            }
-        }
+        WeatherGallery(modifier = Modifier.weight(1f),
+            list = list,
+            onPictureClick = onPictureClick
+            )
 
         Row {
 
