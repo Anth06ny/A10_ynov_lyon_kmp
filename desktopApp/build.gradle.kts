@@ -21,8 +21,15 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.amonteiro.a10_ynov_lyon_kmp"
+            packageName = "My météo"
             packageVersion = "1.0.0"
+
+            windows {
+                shortcut = true
+                menu = true
+                // Icône pour l'application et l'installateur
+                //iconFile.set(project.file("src/commonMain/composeResources/drawable/my_icone.ico"))
+            }
         }
     }
 }

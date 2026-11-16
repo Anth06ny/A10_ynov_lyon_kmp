@@ -1,9 +1,18 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
 }
+
+// Read API key from local.properties
+val localProperties = Properties() //import java.utils
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 
 kotlin {
     compilerOptions {
@@ -38,6 +47,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,4 +61,19 @@ android {
     buildFeatures {
         compose = true
     }
+
+    signingConfigs {
+        val keystoreFile = localProperties.getProperty("KEYSTORE_FILE")
+        if (!keystoreFile.isNullOrBlank()) {
+            create("release") {
+                // rootProject.file -> chemin résolu depuis la racine (où est le keystore)
+                storeFile = rootProject.file(keystoreFile)
+                storePassword = localProperties.getProperty("KEYSTORE_PASSWORD")
+                keyAlias = localProperties.getProperty("KEY_ALIAS")
+                keyPassword = localProperties.getProperty("KEY_PASSWORD")
+            }
+        }
+    }
+
+
 }
